@@ -1,0 +1,35 @@
+* =nix-org-export=
+
+Use =nix-org-export= to export org files to PDFs using =(org-latex-export-to-pdf)=.
+
+** Usage
+
+*** Using flakes
+
+ - Ensure you have flakes enabled
+ - Add =github:t4ccer/nix-org-export= to your inputs
+ - Call =exportOrgFor "your-system" ./path-to-org-file=
+
+** Example
+
+Example exposes README of your project in PDF as a flake output.
+
+#+begin_src nix
+  {
+    description = "nix-org-export example";
+    inputs.nix-org-export.url = "github:t4ccer/nix-org-export";
+    outputs = { nix-org-export, ... }: {
+      readmeExported = nix-org-export.exportOrgFor "x86_64-linux" ./README.org;
+    };
+  }
+#+end_src
+
+** License
+
+Copyright (C) 2022 Tomasz Maciosowski (t4ccer)
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
