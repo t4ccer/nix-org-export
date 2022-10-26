@@ -35,8 +35,8 @@
           (message "Exporting org to pdf...")
           (setenv "PATH" (concat (getenv "PATH") ":${(pkgsFor system).texlive.combined.scheme-full}/bin"))
           (require 'org)
-          (find-file "file.org")
-          (org-latex-export-to-pdf)
+          (find-file (getenv "NIX_ORG_EXPORT_FILE"))
+          (copy-file (org-latex-export-to-pdf) (getenv "NIX_ORG_EXPORT_OUT") 't)
           (message "Exporting org to pdf done!")
         '';
       };
@@ -46,10 +46,14 @@
         name = "exported.pdf";
         inherit src;
         buildPhase = ''
+          cp -r $src .
+          stat ${file}
+          export NIX_ORG_EXPORT_FILE="${file}"
+          export NIX_ORG_EXPORT_OUT="$(mktemp out.XXXXXX)"
           ${customEmacsFor system}/bin/emacs --batch --no-init --load ${elispScriptFor system}
         '';
         installPhase = ''
-          cp file.pdf $out
+          cp $NIX_ORG_EXPORT_OUT $out
         '';
       };
 
