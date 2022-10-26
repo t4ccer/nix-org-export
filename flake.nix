@@ -41,23 +41,20 @@
         '';
       };
   in rec {
-    exportOrgFor = system: file:
-      derivation {
+    exportOrgFor = system: src: file:
+      (pkgsFor system).stdenv.mkDerivation {
         name = "exported.pdf";
-        inherit system;
-        builder = "${(pkgsFor system).bash}/bin/bash";
-        args = [
-          "-c"
-          ''
-            ${(pkgsFor system).coreutils}/bin/cp ${file} file.org
-            ${customEmacsFor system}/bin/emacs --batch --no-init --load ${elispScriptFor system}
-            ${(pkgsFor system).coreutils}/bin/mv file.pdf $out
-          ''
-        ];
+        inherit src;
+        buildPhase = ''
+          ${customEmacsFor system}/bin/emacs --batch --no-init --load ${elispScriptFor system}
+        '';
+        installPhase = ''
+          cp file.pdf $out
+        '';
       };
 
     # Example how to use `exportOrgFor`
-    readmeExported = perSystem (system: exportOrgFor system ./README.org);
+    readmeExported = perSystem (system: exportOrgFor system ./. "README.org");
 
     formatter = perSystem (system: nixpkgs.legacyPackages.${system}.alejandra);
   };
