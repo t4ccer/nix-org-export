@@ -8,7 +8,7 @@ Use =nix-org-export= to export org files to PDFs using =(org-latex-export-to-pdf
 
  - Ensure you have flakes enabled
  - Add =github:t4ccer/nix-org-export= to your inputs
- - Call =exportOrgFor "your-system" ./path-to-org-file=
+ - Call =exportOrgFor "your-system" ./src "path-to-org-file="
 
 ** Example
 
@@ -19,7 +19,7 @@ Example exposes README of your project in PDF as a flake output.
     description = "nix-org-export example";
     inputs.nix-org-export.url = "github:t4ccer/nix-org-export";
     outputs = { nix-org-export, ... }: {
-      readmeExported = nix-org-export.exportOrgFor "x86_64-linux" ./README.org;
+      readmeExported = nix-org-export.exportOrgFor "x86_64-linux" ./. "README.org";
     };
   }
 #+end_src
