@@ -33,7 +33,6 @@
         name = "org-export.el";
         text = ''
           (message "Exporting org to pdf...")
-          (setenv "PATH" (concat (getenv "PATH") ":${(pkgsFor system).texlive.combined.scheme-full}/bin"))
           (require 'org)
           (find-file (getenv "NIX_ORG_EXPORT_FILE"))
           (copy-file (org-latex-export-to-pdf) (getenv "NIX_ORG_EXPORT_OUT") 't)
@@ -45,6 +44,9 @@
       (pkgsFor system).stdenv.mkDerivation {
         name = "exported.pdf";
         inherit src;
+        buildInputs = [
+          (pkgsFor system).texlive.combined.scheme-full
+        ];
         buildPhase = ''
           cp -r $src .
           stat ${file}
